@@ -25,11 +25,12 @@ def test_textbox(page: Page):
     page.goto("https://demoqa.com/")
     # Query all elements with class "card mt-4 top-card" and click the first element
     page.query_selector_all(".card.mt-4.top-card")[0].click()
+
+    page.get_by_text("Text Box").click()
     # Locate the page header
     item_page_header = page.locator(".main-header")
-    # Expect the page header to contain the text "Elements"
-    expect(item_page_header).to_contain_text("Elements")
-    page.get_by_text("Text Box").click()
+    # Expect the title of the page to be "Text Box"
+    expect(item_page_header).to_contain_text("Text Box")
 
     username_label = page.locator("#userName-label")
     expect(username_label).to_contain_text("Full Name")
@@ -58,3 +59,34 @@ def test_textbox(page: Page):
     expect(page.locator("#permanentAddress.mb-1")).to_contain_text(
         f"Permananet Address :{data['permanentAddress']}"
     )
+
+
+@pytest.mark.pw
+def test_textbox_email_error(page: Page):
+    page.goto("https://demoqa.com/")
+    # Query all elements with class "card mt-4 top-card" and click the first element
+    page.query_selector_all(".card.mt-4.top-card")[0].click()
+    page.get_by_text("Text Box").click()
+    page.locator("#userEmail").fill("123")
+    page.get_by_text("Submit").click()
+    expect(page.locator("#userEmail")).to_have_css("border", "1px solid rgb(255, 0, 0)")
+
+
+@pytest.mark.pw
+def test_checkbox(page: Page):
+    # Navigate to the page
+    page.goto("https://demoqa.com/")
+    # Query all elements with class "card mt-4 top-card" and click the first element
+    page.query_selector_all(".card.mt-4.top-card")[0].click()
+    # Locate the page header
+    page.get_by_text("Check Box").click()
+    # Locate the page header
+    item_page_header = page.locator(".main-header")
+    # Expect the title of the page to be "Check Box"
+    expect(item_page_header).to_contain_text("Check Box")
+
+    # Check the checkbox
+    page.locator(".rct-checkbox").check()
+
+    # Assert the checked state
+    assert page.locator(".rct-checkbox").is_checked() is True
