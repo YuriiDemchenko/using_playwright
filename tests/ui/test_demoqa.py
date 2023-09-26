@@ -74,6 +74,7 @@ def test_textbox_email_error(page: Page):
 
 @pytest.mark.pw
 def test_checkbox(page: Page):
+    items_to_select = ["General", "Notes", "React"]
     # Navigate to the page
     page.goto("https://demoqa.com/")
     # Query all elements with class "card mt-4 top-card" and click the first element
@@ -85,8 +86,18 @@ def test_checkbox(page: Page):
     # Expect the title of the page to be "Check Box"
     expect(item_page_header).to_contain_text("Check Box")
 
+    page.get_by_label("Expand all").click()
     # Check the checkbox
-    page.locator(".rct-checkbox").check()
-
+    page.get_by_text("Home", exact=True).check()
     # Assert the checked state
-    assert page.locator(".rct-checkbox").is_checked() is True
+    assert page.get_by_text("Home", exact=True).is_checked() is True
+    for i in page.locator(".rct-checkbox").all():
+        i.uncheck()
+    assert page.get_by_text("Downloads", exact=True).is_checked() is False
+    page.get_by_label("Expand all").click()
+
+    for item in items_to_select:
+        page.get_by_text(item, exact=True).check()
+        assert page.get_by_text(item, exact=True).is_checked() is True
+
+    page.get_by_label("Collapse all").click()
