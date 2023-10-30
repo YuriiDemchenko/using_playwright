@@ -1,3 +1,4 @@
+from time import sleep
 import pytest
 from playwright.sync_api import Page, expect
 
@@ -106,3 +107,21 @@ def test_radio_buttons(page: Page):
     assert page.locator("#impressiveRadio").is_checked() is True
     assert page.locator(".text-success").text_content() == "Impressive"
     expect(page.locator("#noRadio")).to_be_disabled()
+
+
+@pytest.mark.pw1
+def test_web_tables(page: Page):
+    page.get_by_text("Elements").click()
+    page.get_by_text("Web Tables").click()
+    page.locator("#addNewRecordButton").click()
+    page.get_by_placeholder("First Name").fill("John")
+    page.get_by_placeholder("Last Name").fill("Doe")
+    page.get_by_placeholder("name@example.com").fill("j.d@fake.com")
+    page.get_by_placeholder("Age").fill("19")
+    page.get_by_placeholder("Salary").fill("999")
+    page.get_by_placeholder("Department").fill("IT")
+    page.get_by_text("Submit").click()
+
+    expect(page.locator(".rt-table")).to_contain_text("John")
+    expect(page.locator(".rt-table")).to_contain_text("999")
+    expect(page.locator(".rt-table")).to_contain_text("IT")
