@@ -1,4 +1,3 @@
-from time import sleep
 import pytest
 from playwright.sync_api import Page, expect
 
@@ -114,6 +113,7 @@ def test_web_tables(page: Page):
     page.get_by_text("Elements").click()
     page.get_by_text("Web Tables").click()
     page.locator("#addNewRecordButton").click()
+    # Fill all fields
     page.get_by_placeholder("First Name").fill("John")
     page.get_by_placeholder("Last Name").fill("Doe")
     page.get_by_placeholder("name@example.com").fill("j.d@fake.com")
@@ -121,7 +121,7 @@ def test_web_tables(page: Page):
     page.get_by_placeholder("Salary").fill("999")
     page.get_by_placeholder("Department").fill("IT")
     page.get_by_text("Submit").click()
-
+    # Expect selected fields to have correct values
     expect(page.locator(".rt-table")).to_contain_text("John")
     expect(page.locator(".rt-table")).to_contain_text("999")
     expect(page.locator(".rt-table")).to_contain_text("IT")
