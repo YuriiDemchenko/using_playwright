@@ -123,5 +123,36 @@ def test_web_tables(page: Page):
     page.get_by_text("Submit").click()
     # Expect selected fields to have correct values
     expect(page.locator(".rt-table")).to_contain_text("John")
+    expect(page.locator(".rt-table")).to_contain_text("Doe")
+    expect(page.locator(".rt-table")).to_contain_text("j.d@fake.com")
+    expect(page.locator(".rt-table")).to_contain_text("19")
     expect(page.locator(".rt-table")).to_contain_text("999")
     expect(page.locator(".rt-table")).to_contain_text("IT")
+
+    # Edit selected record
+    find_element(page, "John", "edit").click()
+    page.get_by_placeholder("Salary").fill("1520")
+    page.get_by_placeholder("Department").fill("Support")
+    page.get_by_text("Submit").click()
+
+    # Delete selected record
+    find_element(page, "John", "delete").click()
+
+
+def find_element(page: Page, name, action):
+    # Get the locator for all rows in the table
+    rows_locator = page.locator(".rt-table .rt-tbody .rt-tr-group")
+    # Get the number of rows
+    num_rows = rows_locator.count()
+    # Iterate over each row
+    for i in range(num_rows):
+        # Get the locator for the current row
+        row = rows_locator.nth(i)
+        # Get the first name in the current row
+        first_name = row.locator(".rt-td").nth(0).inner_text()
+        # Check if the first name matches the name we're looking for
+        if first_name == name:
+            # If it does, return the locator for the element with the specified action in the current row
+            return row.locator(f"span[id^='{action}-record-']")
+            # Exit the loop once the element is found
+            break
